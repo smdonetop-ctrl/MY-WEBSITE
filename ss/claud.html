@@ -1,0 +1,1755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="Claude.css">
+<title>Glorious Cosmetics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
+<style>
+/* ─────────────────────────────────────────
+   TOKENS & RESET
+───────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --cream: #F9F4EE;
+  --cream2: #F2EBE0;
+  --warm-white: #FFFDF9;
+  --charcoal: #1C1C1A;
+  --charcoal2: #2E2D2B;
+  --muted: #8C8880;
+  --muted-light: #B8B4AE;
+  --gold: #B8904A;
+  --gold-light: #D4B078;
+  --gold-pale: #EDE0C8;
+  --rose: #C4747A;
+  --rose-pale: #F5E8E9;
+  --rose-deep: #8B4A50;
+  --text: #1C1C1A;
+
+  --font-display: 'Playfair Display', serif;
+  --font-body: 'Jost', sans-serif;
+
+  --nav-h: 72px;
+  --transition: 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--warm-white);
+  color: var(--text);
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* ─────────────────────────────────────────
+   CUSTOM CURSOR
+───────────────────────────────────────── */
+#cursor-outer {
+  position: fixed; top: 0; left: 0;
+  width: 36px; height: 36px;
+  border: 1.5px solid var(--gold);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99999;
+  transition: transform 0.15s ease, border-color 0.3s ease, width 0.3s ease, height 0.3s ease;
+  transform: translate(-50%, -50%);
+  mix-blend-mode: multiply;
+}
+#cursor-inner {
+  position: fixed; top: 0; left: 0;
+  width: 6px; height: 6px;
+  background: var(--gold);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 99999;
+  transform: translate(-50%, -50%);
+  transition: transform 0.05s ease;
+}
+body:has(a:hover) #cursor-outer,
+body:has(button:hover) #cursor-outer {
+  width: 56px; height: 56px;
+  border-color: var(--rose);
+}
+
+/* ─────────────────────────────────────────
+   NOISE TEXTURE OVERLAY
+───────────────────────────────────────── */
+body::after {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 9998;
+  opacity: 0.4;
+}
+
+/* ─────────────────────────────────────────
+   NAVIGATION
+───────────────────────────────────────── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: var(--nav-h);
+  display: flex; align-items: center;
+  justify-content: space-between;
+  padding: 0 48px;
+  z-index: 1000;
+  transition: background var(--transition), backdrop-filter var(--transition);
+}
+nav.scrolled {
+  background: rgba(249, 244, 238, 0.88);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(184,144,74,0.15);
+}
+
+.nav-logo {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: 6px;
+  text-transform: uppercase;
+  color: var(--charcoal);
+  text-decoration: none;
+}
+.nav-logo span { color: var(--gold); }
+
+.nav-links {
+  display: flex; gap: 40px; list-style: none;
+}
+.nav-links a {
+  font-size: 12px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--charcoal2);
+  text-decoration: none;
+  font-weight: 300;
+  position: relative;
+  padding-bottom: 3px;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0;
+  width: 0; height: 1px;
+  background: var(--gold);
+  transition: width 0.35s ease;
+}
+.nav-links a:hover::after { width: 100%; }
+
+.nav-actions {
+  display: flex; align-items: center; gap: 24px;
+}
+.nav-icon-btn {
+  background: none; border: none; cursor: none;
+  color: var(--charcoal2);
+  font-size: 18px;
+  display: flex; align-items: center;
+  transition: color 0.2s;
+}
+.nav-icon-btn:hover { color: var(--gold); }
+
+.nav-cart-btn {
+  background: var(--charcoal);
+  color: var(--cream);
+  border: none; cursor: none;
+  padding: 10px 24px;
+  font-family: var(--font-body);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: 400;
+  transition: background 0.3s, color 0.3s;
+  position: relative; overflow: hidden;
+}
+.nav-cart-btn::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: var(--gold);
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  z-index: 0;
+}
+.nav-cart-btn:hover::before { transform: translateX(0); }
+.nav-cart-btn span { position: relative; z-index: 1; }
+
+/* ─────────────────────────────────────────
+   HERO
+───────────────────────────────────────── */
+.hero {
+  height: 100vh;
+  min-height: 700px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-left {
+  background: var(--charcoal);
+  display: flex; flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 72px 80px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-left::before {
+  content: '';
+  position: absolute; top: -120px; right: -80px;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(184,144,74,0.18) 0%, transparent 65%);
+  border-radius: 50%;
+}
+
+.hero-eyebrow {
+  font-size: 11px; letter-spacing: 4px;
+  text-transform: uppercase; color: var(--gold);
+  font-weight: 300; margin-bottom: 20px;
+  opacity: 0; transform: translateY(20px);
+  animation: fadeUp 0.8s 0.2s forwards;
+}
+
+.hero-title {
+  font-family: var(--font-display);
+  font-size: clamp(52px, 6vw, 84px);
+  font-weight: 400; line-height: 1.08;
+  color: var(--cream);
+  margin-bottom: 32px;
+  opacity: 0; transform: translateY(30px);
+  animation: fadeUp 0.9s 0.4s forwards;
+}
+.hero-title em {
+  font-style: italic; color: var(--gold-light);
+  display: block;
+}
+
+.hero-sub {
+  font-size: 14px; font-weight: 300;
+  line-height: 1.8; color: rgba(249,244,238,0.55);
+  max-width: 340px; margin-bottom: 48px;
+  opacity: 0; transform: translateY(20px);
+  animation: fadeUp 0.8s 0.6s forwards;
+}
+
+.hero-cta-row {
+  display: flex; align-items: center; gap: 32px;
+  opacity: 0; transform: translateY(20px);
+  animation: fadeUp 0.8s 0.8s forwards;
+}
+
+.btn-primary {
+  background: var(--gold);
+  color: var(--charcoal);
+  border: none; cursor: none;
+  padding: 16px 40px;
+  font-family: var(--font-body);
+  font-size: 11px; letter-spacing: 3px;
+  text-transform: uppercase; font-weight: 500;
+  transition: all 0.3s;
+  position: relative; overflow: hidden;
+  text-decoration: none; display: inline-block;
+}
+.btn-primary::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: rgba(255,255,255,0.15);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.3s;
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(184,144,74,0.35); }
+.btn-primary:hover::after { transform: scaleX(1); }
+
+.btn-ghost {
+  background: none;
+  color: rgba(249,244,238,0.65);
+  border: none; cursor: none;
+  font-family: var(--font-body);
+  font-size: 12px; letter-spacing: 2px;
+  text-transform: uppercase; font-weight: 300;
+  text-decoration: none;
+  display: flex; align-items: center; gap: 8px;
+  transition: color 0.3s;
+}
+.btn-ghost:hover { color: var(--gold-light); }
+.btn-ghost .arrow { display: inline-block; transition: transform 0.3s; }
+.btn-ghost:hover .arrow { transform: translateX(4px); }
+
+.hero-stats {
+  position: absolute; right: 48px; bottom: 80px;
+  display: flex; flex-direction: column; gap: 32px;
+}
+.stat-item { text-align: right; }
+.stat-num {
+  font-family: var(--font-display);
+  font-size: 32px; font-weight: 400;
+  color: var(--cream);
+  display: block; line-height: 1;
+}
+.stat-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+
+/* Hero right — image panel */
+.hero-right {
+  background: var(--cream2);
+  position: relative; overflow: hidden;
+}
+
+.hero-img-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse at 30% 70%, rgba(196,116,122,0.25) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(184,144,74,0.2) 0%, transparent 55%),
+    linear-gradient(160deg, #e8ddd0 0%, #d4c8b8 40%, #c8b9a8 100%);
+}
+
+/* Abstract cosmetic illustration using CSS */
+.cosmetic-art {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.bottle-wrap {
+  position: relative;
+  opacity: 0;
+  animation: fadeUp 1s 0.5s forwards;
+}
+
+.bottle {
+  width: 140px; height: 300px;
+  background: linear-gradient(135deg, #E8D8C4 0%, #C8B090 40%, #A88860 100%);
+  border-radius: 70px 70px 20px 20px;
+  position: relative;
+  box-shadow:
+    inset -12px 0 24px rgba(255,255,255,0.25),
+    inset 4px 0 12px rgba(0,0,0,0.08),
+    24px 48px 80px rgba(28,28,26,0.35);
+}
+.bottle::before {
+  content: '';
+  position: absolute; top: -40px; left: 50%; transform: translateX(-50%);
+  width: 44px; height: 50px;
+  background: linear-gradient(to bottom, #C8A070, #A87848);
+  border-radius: 8px 8px 0 0;
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.2);
+}
+.bottle::after {
+  content: '';
+  position: absolute; top: -56px; left: 50%; transform: translateX(-50%);
+  width: 30px; height: 20px;
+  background: #D4B080;
+  border-radius: 4px 4px 0 0;
+}
+.bottle-label {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  font-family: var(--font-display);
+  font-size: 13px; letter-spacing: 2px;
+  color: rgba(255,255,255,0.9);
+  text-align: center; font-weight: 400;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
+
+.bottle-shimmer {
+  position: absolute; inset: 0;
+  border-radius: 70px 70px 20px 20px;
+  background: linear-gradient(
+    135deg,
+    transparent 30%,
+    rgba(255,255,255,0.18) 48%,
+    transparent 65%
+  );
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%, 100% { opacity: 0.5; transform: translateX(-20px) skewX(-5deg); }
+  50% { opacity: 1; transform: translateX(20px) skewX(-5deg); }
+}
+
+/* Floating petals/orbs */
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.6;
+}
+.orb-1 { width: 120px; height: 120px; top: 10%; left: 8%; background: radial-gradient(circle, rgba(196,116,122,0.5), transparent); animation: float1 6s ease-in-out infinite; }
+.orb-2 { width: 80px; height: 80px; top: 60%; right: 12%; background: radial-gradient(circle, rgba(184,144,74,0.45), transparent); animation: float2 8s ease-in-out infinite; }
+.orb-3 { width: 50px; height: 50px; bottom: 20%; left: 15%; background: radial-gradient(circle, rgba(196,116,122,0.35), transparent); animation: float1 5s 1s ease-in-out infinite; }
+
+@keyframes float1 {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-18px) scale(1.05); }
+}
+@keyframes float2 {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-12px) rotate(10deg); }
+}
+
+/* Decorative lines on hero */
+.hero-deco-line {
+  position: absolute; left: 0; top: 0; bottom: 0;
+  width: 1px; background: rgba(184,144,74,0.2);
+}
+
+.hero-scroll-hint {
+  position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  color: var(--muted); font-size: 10px; letter-spacing: 3px;
+  text-transform: uppercase; font-weight: 300;
+  opacity: 0; animation: fadeUp 0.8s 1.4s forwards;
+}
+.scroll-line {
+  width: 1px; height: 40px;
+  background: linear-gradient(to bottom, var(--gold), transparent);
+  animation: scrollPulse 2s ease-in-out infinite;
+}
+@keyframes scrollPulse {
+  0%, 100% { transform: scaleY(1); opacity: 1; }
+  50% { transform: scaleY(0.6); opacity: 0.4; }
+}
+
+/* ─────────────────────────────────────────
+   MARQUEE TICKER
+───────────────────────────────────────── */
+.ticker {
+  background: var(--gold);
+  padding: 14px 0;
+  overflow: hidden;
+  position: relative;
+}
+.ticker-track {
+  display: flex; gap: 0;
+  width: max-content;
+  animation: ticker 22s linear infinite;
+}
+.ticker-track:hover { animation-play-state: paused; }
+.ticker-item {
+  display: flex; align-items: center; gap: 48px;
+  padding: 0 48px;
+  font-size: 11px; letter-spacing: 3px;
+  text-transform: uppercase; font-weight: 400;
+  color: var(--charcoal);
+  white-space: nowrap;
+}
+.ticker-sep { color: rgba(28,28,26,0.35); font-size: 14px; }
+@keyframes ticker {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* ─────────────────────────────────────────
+   FEATURED COLLECTION
+───────────────────────────────────────── */
+.section-featured {
+  padding: 120px 72px;
+  background: var(--warm-white);
+  position: relative;
+}
+
+.section-header {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-bottom: 64px;
+}
+
+.section-eyebrow {
+  font-size: 10px; letter-spacing: 4px; text-transform: uppercase;
+  color: var(--gold); font-weight: 400; margin-bottom: 12px;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 4vw, 52px);
+  font-weight: 400; line-height: 1.15;
+  color: var(--charcoal);
+}
+.section-title em { font-style: italic; color: var(--rose); }
+
+.view-all-link {
+  font-size: 11px; letter-spacing: 2.5px;
+  text-transform: uppercase; color: var(--charcoal);
+  text-decoration: none; font-weight: 400;
+  display: flex; align-items: center; gap: 8px;
+  border-bottom: 1px solid var(--charcoal);
+  padding-bottom: 2px;
+  transition: color 0.3s, border-color 0.3s;
+}
+.view-all-link:hover { color: var(--gold); border-color: var(--gold); }
+.view-all-link:hover .arrow { transform: translateX(4px); }
+.view-all-link .arrow { display: inline-block; transition: transform 0.3s; }
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+}
+
+.product-card {
+  position: relative; overflow: hidden;
+  cursor: none;
+  background: var(--cream2);
+}
+
+.product-card:first-child {
+  grid-row: span 2;
+  grid-column: span 1;
+}
+
+.product-image {
+  aspect-ratio: 3/4;
+  position: relative; overflow: hidden;
+}
+.product-card:first-child .product-image { aspect-ratio: auto; height: 100%; }
+
+.product-img-bg {
+  position: absolute; inset: 0;
+  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.product-card:hover .product-img-bg { transform: scale(1.06); }
+
+/* Unique color for each card */
+.product-card:nth-child(1) .product-img-bg { background: linear-gradient(160deg, #E8D4C8 0%, #C8A898 50%, #A87868 100%); }
+.product-card:nth-child(2) .product-img-bg { background: linear-gradient(160deg, #D8E4D0 0%, #B0C8A0 50%, #88A878 100%); }
+.product-card:nth-child(3) .product-img-bg { background: linear-gradient(160deg, #D4D0E8 0%, #A8A0C8 50%, #7870A8 100%); }
+.product-card:nth-child(4) .product-img-bg { background: linear-gradient(160deg, #E8D8C4 0%, #C8B090 50%, #A88860 100%); }
+.product-card:nth-child(5) .product-img-bg { background: linear-gradient(160deg, #E8D0D4 0%, #C8A0A8 50%, #A87880 100%); }
+
+/* Product illustration using CSS shapes */
+.product-visual {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.product-tube {
+  width: 60px; height: 160px;
+  border-radius: 30px;
+  box-shadow: inset -6px 0 12px rgba(255,255,255,0.3), 8px 16px 40px rgba(0,0,0,0.2);
+  position: relative;
+}
+.product-tube::after {
+  content: '';
+  position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%);
+  width: 40px; height: 14px;
+  border-radius: 0 0 6px 6px;
+}
+.product-jar {
+  width: 100px; height: 80px;
+  border-radius: 50% 50% 12px 12px;
+  box-shadow: inset -8px -4px 16px rgba(255,255,255,0.25), 8px 16px 40px rgba(0,0,0,0.2);
+  position: relative;
+}
+.product-jar::before {
+  content: '';
+  position: absolute; top: -18px; left: 10px; right: 10px; height: 20px;
+  border-radius: 50% 50% 0 0;
+  background: rgba(255,255,255,0.15);
+}
+.product-serum {
+  width: 48px; height: 130px;
+  border-radius: 24px 24px 8px 8px;
+  box-shadow: inset -5px 0 10px rgba(255,255,255,0.3), 8px 16px 40px rgba(0,0,0,0.2);
+  position: relative;
+}
+.product-serum::before {
+  content: '';
+  position: absolute; top: -20px; left: 50%; transform: translateX(-50%);
+  width: 20px; height: 22px;
+  border-radius: 4px 4px 0 0;
+}
+.product-lipstick {
+  width: 44px; height: 140px;
+  border-radius: 8px;
+  box-shadow: inset -6px 0 12px rgba(255,255,255,0.3), 8px 16px 40px rgba(0,0,0,0.2);
+  position: relative;
+}
+.product-lipstick::before {
+  content: '';
+  position: absolute; top: -32px; left: 4px; right: 4px; height: 34px;
+  border-radius: 4px 4px 40px 40px;
+}
+
+/* Unique styling for each product visual */
+.product-card:nth-child(1) .product-tube { background: linear-gradient(to right, #C8A898, #E8C8B8); height: 200px; width: 80px; }
+.product-card:nth-child(1) .product-tube::after { background: #C4A090; }
+.product-card:nth-child(2) .product-jar { background: linear-gradient(to right, #B0C8A0, #D0E4C0); }
+.product-card:nth-child(2) .product-jar::before { background: rgba(255,255,255,0.2); }
+.product-card:nth-child(3) .product-serum { background: linear-gradient(to right, #9890C8, #C0B8E0); }
+.product-card:nth-child(3) .product-serum::before { background: #9080C0; }
+.product-card:nth-child(4) .product-lipstick { background: linear-gradient(to right, #B09060, #D0B080); }
+.product-card:nth-child(4) .product-lipstick::before { background: #C87070; }
+.product-card:nth-child(5) .product-tube { background: linear-gradient(to right, #C8A0A8, #E8C0C8); width: 52px; height: 130px; }
+
+.product-overlay {
+  position: absolute; inset: 0;
+  background: rgba(28,28,26,0);
+  display: flex; align-items: flex-end; padding: 24px;
+  transition: background 0.4s;
+}
+.product-card:hover .product-overlay { background: rgba(28,28,26,0.3); }
+
+.product-add-btn {
+  background: var(--cream);
+  color: var(--charcoal);
+  border: none; cursor: none;
+  padding: 12px 24px;
+  font-family: var(--font-body);
+  font-size: 11px; letter-spacing: 2px;
+  text-transform: uppercase;
+  opacity: 0; transform: translateY(8px);
+  transition: all 0.3s;
+  width: 100%;
+  text-align: center;
+}
+.product-card:hover .product-add-btn {
+  opacity: 1; transform: translateY(0);
+}
+.product-add-btn:hover { background: var(--gold); color: var(--charcoal); }
+
+.product-info {
+  padding: 20px 16px 16px;
+  background: var(--warm-white);
+}
+.product-name {
+  font-family: var(--font-display);
+  font-size: 16px; font-weight: 400;
+  color: var(--charcoal); margin-bottom: 6px;
+}
+.product-variant { font-size: 11px; color: var(--muted); letter-spacing: 1px; margin-bottom: 8px; }
+.product-price-row { display: flex; align-items: center; justify-content: space-between; }
+.product-price {
+  font-size: 15px; font-weight: 400; color: var(--charcoal);
+}
+.product-wishlist {
+  background: none; border: none; cursor: none;
+  color: var(--muted-light); font-size: 16px;
+  transition: color 0.2s;
+}
+.product-wishlist:hover { color: var(--rose); }
+
+/* ─────────────────────────────────────────
+   BRAND MANIFESTO / SPLIT SECTION
+───────────────────────────────────────── */
+.section-manifesto {
+  display: grid; grid-template-columns: 1fr 1fr;
+  min-height: 600px;
+}
+
+.manifesto-left {
+  background: var(--charcoal);
+  padding: 100px 80px;
+  display: flex; flex-direction: column; justify-content: center;
+  position: relative; overflow: hidden;
+}
+.manifesto-left::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background:
+    radial-gradient(ellipse at 0% 100%, rgba(184,144,74,0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 100% 0%, rgba(196,116,122,0.1) 0%, transparent 50%);
+}
+
+.manifesto-quote {
+  font-family: var(--font-display);
+  font-size: clamp(28px, 3.5vw, 46px);
+  font-weight: 400; font-style: italic;
+  color: var(--cream);
+  line-height: 1.3;
+  position: relative; z-index: 1;
+  margin-bottom: 40px;
+}
+.manifesto-quote::before {
+  content: '\201C';
+  font-size: 120px; line-height: 0.5;
+  color: rgba(184,144,74,0.2);
+  display: block; margin-bottom: 16px;
+  font-family: var(--font-display);
+}
+
+.manifesto-attr {
+  font-size: 11px; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--gold);
+  font-weight: 300; position: relative; z-index: 1;
+  margin-bottom: 48px;
+}
+
+.btn-light {
+  display: inline-block;
+  color: var(--cream);
+  border: 1px solid rgba(249,244,238,0.3);
+  padding: 14px 36px;
+  font-family: var(--font-body);
+  font-size: 11px; letter-spacing: 2.5px;
+  text-transform: uppercase; text-decoration: none;
+  transition: all 0.3s; position: relative; z-index: 1;
+  width: fit-content;
+}
+.btn-light:hover { background: rgba(249,244,238,0.08); border-color: var(--gold); color: var(--gold-light); }
+
+.manifesto-right {
+  background: var(--cream2);
+  padding: 100px 80px;
+  display: flex; flex-direction: column; justify-content: center;
+  gap: 40px;
+}
+
+.value-item {
+  display: flex; gap: 24px; align-items: flex-start;
+}
+.value-num {
+  font-family: var(--font-display);
+  font-size: 48px; font-weight: 400; font-style: italic;
+  color: var(--gold-pale);
+  line-height: 1; flex-shrink: 0;
+  width: 64px;
+}
+.value-content {}
+.value-title {
+  font-family: var(--font-display);
+  font-size: 20px; font-weight: 400;
+  color: var(--charcoal); margin-bottom: 8px;
+}
+.value-desc {
+  font-size: 14px; font-weight: 300;
+  color: var(--muted); line-height: 1.7;
+}
+
+/* ─────────────────────────────────────────
+   BESTSELLERS CAROUSEL
+───────────────────────────────────────── */
+.section-bestsellers {
+  padding: 120px 0;
+  background: var(--warm-white);
+  overflow: hidden;
+}
+
+.bestsellers-header {
+  padding: 0 72px;
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-bottom: 64px;
+}
+
+.carousel-nav {
+  display: flex; gap: 12px;
+}
+.carousel-btn {
+  width: 48px; height: 48px;
+  border: 1px solid rgba(28,28,26,0.2);
+  background: none; cursor: none;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; color: var(--charcoal);
+  transition: all 0.3s;
+}
+.carousel-btn:hover { background: var(--charcoal); color: var(--cream); border-color: var(--charcoal); }
+
+.carousel-track {
+  display: flex; gap: 24px;
+  padding: 0 72px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  scroll-behavior: smooth;
+  cursor: grab;
+}
+.carousel-track:active { cursor: grabbing; }
+.carousel-track::-webkit-scrollbar { display: none; }
+
+.carousel-card {
+  flex-shrink: 0;
+  width: 280px;
+  scroll-snap-align: start;
+}
+
+.carousel-img {
+  height: 340px;
+  position: relative; overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.carousel-img-bg {
+  position: absolute; inset: 0;
+  transition: transform 0.6s ease;
+}
+.carousel-card:hover .carousel-img-bg { transform: scale(1.05); }
+
+/* Bestseller product illustrations */
+.c1 .carousel-img-bg { background: linear-gradient(145deg, #F0DDD0 0%, #D4B098 100%); }
+.c2 .carousel-img-bg { background: linear-gradient(145deg, #D8D4E8 0%, #B8B0D0 100%); }
+.c3 .carousel-img-bg { background: linear-gradient(145deg, #D8E8D4 0%, #A8C8A0 100%); }
+.c4 .carousel-img-bg { background: linear-gradient(145deg, #F0D8DC 0%, #D4A0A8 100%); }
+.c5 .carousel-img-bg { background: linear-gradient(145deg, #E8E0D4 0%, #C8B8A4 100%); }
+
+.carousel-product-art {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.mini-bottle {
+  width: 56px; height: 140px;
+  border-radius: 28px 28px 10px 10px;
+  box-shadow: inset -5px 0 10px rgba(255,255,255,0.3), 6px 12px 30px rgba(0,0,0,0.2);
+  position: relative;
+}
+.mini-bottle::before {
+  content: '';
+  position: absolute; top: -18px; left: 50%; transform: translateX(-50%);
+  width: 22px; height: 20px;
+  border-radius: 3px 3px 0 0;
+}
+
+.c1 .mini-bottle { background: linear-gradient(to right, #C8A080, #E8C098); }
+.c1 .mini-bottle::before { background: #B89070; }
+.c2 .mini-bottle { background: linear-gradient(to right, #9890C0, #C0B8D8); border-radius: 8px; height: 130px; width: 48px; }
+.c2 .mini-bottle::before { background: #8878B0; }
+.c3 .mini-bottle { background: linear-gradient(to right, #88B880, #A8D0A0); height: 120px; }
+.c3 .mini-bottle::before { background: #78A870; }
+.c4 .mini-bottle { background: linear-gradient(to right, #C8808A, #E0A0A8); border-radius: 50% 50% 12px 12px; height: 80px; width: 96px; }
+.c4 .mini-bottle::before { background: rgba(255,255,255,0.2); top: -16px; border-radius: 50% 50% 0 0; }
+.c5 .mini-bottle { background: linear-gradient(to right, #B0A090, #D0C0A8); width: 44px; border-radius: 8px; }
+.c5 .mini-bottle::before { background: #D07070; border-radius: 2px 2px 40px 40px; }
+
+.bestseller-badge {
+  position: absolute; top: 16px; left: 16px;
+  background: var(--charcoal);
+  color: var(--cream);
+  font-size: 9px; letter-spacing: 2px;
+  text-transform: uppercase; padding: 6px 12px;
+  font-weight: 400;
+}
+
+.shade-dots {
+  display: flex; gap: 6px; margin: 10px 0 14px;
+}
+.shade-dot {
+  width: 14px; height: 14px;
+  border-radius: 50%; cursor: none;
+  transition: transform 0.2s;
+  border: 1.5px solid transparent;
+}
+.shade-dot:hover { transform: scale(1.3); }
+.shade-dot.active { border-color: var(--charcoal); }
+
+.carousel-card-name {
+  font-family: var(--font-display);
+  font-size: 18px; font-weight: 400;
+  color: var(--charcoal); margin-bottom: 4px;
+}
+.carousel-card-type { font-size: 11px; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 12px; }
+.carousel-card-footer { display: flex; align-items: center; justify-content: space-between; }
+.carousel-card-price { font-size: 16px; font-weight: 400; color: var(--charcoal); }
+.carousel-rating { display: flex; align-items: center; gap: 4px; font-size: 12px; color: var(--muted); }
+.stars { color: var(--gold); letter-spacing: -1px; }
+
+/* ─────────────────────────────────────────
+   RITUAL / HOW TO USE
+───────────────────────────────────────── */
+.section-ritual {
+  padding: 120px 72px;
+  background: var(--charcoal);
+  position: relative; overflow: hidden;
+}
+.section-ritual::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse at 10% 50%, rgba(184,144,74,0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 90% 50%, rgba(196,116,122,0.07) 0%, transparent 50%);
+}
+
+.ritual-steps {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 2px; margin-top: 64px; position: relative; z-index: 1;
+}
+
+.ritual-step {
+  padding: 48px 32px;
+  background: rgba(249,244,238,0.03);
+  border: 1px solid rgba(249,244,238,0.07);
+  position: relative;
+  transition: background 0.4s;
+}
+.ritual-step:hover { background: rgba(249,244,238,0.06); }
+
+.ritual-step-num {
+  font-family: var(--font-display);
+  font-size: 80px; font-weight: 400; font-style: italic;
+  color: rgba(184,144,74,0.15);
+  line-height: 1;
+  margin-bottom: 24px;
+}
+.ritual-icon {
+  width: 48px; height: 48px;
+  border: 1px solid rgba(184,144,74,0.3);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; margin-bottom: 24px;
+}
+.ritual-step-title {
+  font-family: var(--font-display);
+  font-size: 20px; font-weight: 400;
+  color: var(--cream); margin-bottom: 12px;
+}
+.ritual-step-desc {
+  font-size: 13px; font-weight: 300;
+  color: rgba(249,244,238,0.5); line-height: 1.8;
+}
+
+/* ─────────────────────────────────────────
+   TESTIMONIALS
+───────────────────────────────────────── */
+.section-testimonials {
+  padding: 120px 72px;
+  background: var(--cream);
+}
+
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr;
+  gap: 2px;
+  margin-top: 64px;
+}
+
+.testimonial-card {
+  padding: 48px 40px;
+  background: var(--warm-white);
+  position: relative;
+  cursor: none;
+  transition: transform 0.3s;
+}
+.testimonial-card:hover { transform: translateY(-4px); z-index: 1; }
+
+.testimonial-card.featured {
+  background: var(--charcoal);
+  padding: 60px 48px;
+}
+
+.testimonial-stars { color: var(--gold); letter-spacing: 2px; font-size: 14px; margin-bottom: 20px; }
+
+.testimonial-text {
+  font-family: var(--font-display);
+  font-size: 18px; font-weight: 400; font-style: italic;
+  line-height: 1.6; color: var(--charcoal); margin-bottom: 32px;
+}
+.testimonial-card.featured .testimonial-text {
+  font-size: 22px; color: var(--cream);
+}
+
+.testimonial-author { display: flex; align-items: center; gap: 16px; }
+.author-avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-display); font-size: 16px;
+  font-weight: 400; font-style: italic;
+  color: white;
+}
+.a1 { background: linear-gradient(135deg, var(--rose), var(--rose-deep)); }
+.a2 { background: linear-gradient(135deg, var(--gold), #A8702A); }
+.a3 { background: linear-gradient(135deg, #7890B8, #506888); }
+.a4 { background: linear-gradient(135deg, #88A870, #608050); }
+
+.author-name { font-size: 13px; font-weight: 500; color: var(--charcoal); }
+.testimonial-card.featured .author-name { color: var(--cream); }
+.author-tag { font-size: 11px; color: var(--muted); letter-spacing: 1px; }
+.testimonial-card.featured .author-tag { color: rgba(249,244,238,0.5); }
+
+/* ─────────────────────────────────────────
+   INSTAGRAM / UGC
+───────────────────────────────────────── */
+.section-ugc {
+  padding: 80px 72px;
+  background: var(--warm-white);
+}
+
+.ugc-header {
+  text-align: center; margin-bottom: 48px;
+}
+.ugc-handle {
+  font-family: var(--font-display); font-style: italic;
+  font-size: 32px; color: var(--charcoal);
+}
+
+.ugc-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 2px;
+}
+
+.ugc-item {
+  aspect-ratio: 1/1;
+  position: relative; overflow: hidden;
+  cursor: none;
+}
+
+.ugc-bg {
+  position: absolute; inset: 0;
+  transition: transform 0.5s ease;
+}
+.ugc-item:hover .ugc-bg { transform: scale(1.1); }
+
+.ugc-item:nth-child(1) .ugc-bg { background: linear-gradient(135deg, #F0D8DC, #D4B0B8); }
+.ugc-item:nth-child(2) .ugc-bg { background: linear-gradient(135deg, #E8D4C4, #C8A898); }
+.ugc-item:nth-child(3) .ugc-bg { background: linear-gradient(135deg, #D0D8E4, #A8B8C8); }
+.ugc-item:nth-child(4) .ugc-bg { background: linear-gradient(135deg, #D8E4D0, #B0C8A0); }
+.ugc-item:nth-child(5) .ugc-bg { background: linear-gradient(135deg, #E8E0D0, #C8C0A8); }
+.ugc-item:nth-child(6) .ugc-bg { background: linear-gradient(135deg, #DDD4E8, #B8A8C8); }
+
+.ugc-overlay {
+  position: absolute; inset: 0;
+  background: rgba(28,28,26,0);
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.3s;
+}
+.ugc-item:hover .ugc-overlay { background: rgba(28,28,26,0.35); }
+
+.ugc-icon {
+  font-size: 28px; color: white;
+  opacity: 0; transform: scale(0.7);
+  transition: all 0.3s;
+}
+.ugc-item:hover .ugc-icon { opacity: 1; transform: scale(1); }
+
+/* ─────────────────────────────────────────
+   NEWSLETTER
+───────────────────────────────────────── */
+.section-newsletter {
+  padding: 100px 72px;
+  background: var(--charcoal);
+  position: relative; overflow: hidden;
+}
+.section-newsletter::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(184,144,74,0.15) 0%, transparent 55%);
+}
+
+.newsletter-inner {
+  max-width: 640px; margin: 0 auto; text-align: center;
+  position: relative; z-index: 1;
+}
+
+.nl-eyebrow {
+  font-size: 10px; letter-spacing: 5px; text-transform: uppercase;
+  color: var(--gold); font-weight: 300; margin-bottom: 20px;
+}
+.nl-title {
+  font-family: var(--font-display);
+  font-size: clamp(32px, 4vw, 48px);
+  font-weight: 400; color: var(--cream);
+  line-height: 1.2; margin-bottom: 16px;
+}
+.nl-title em { font-style: italic; color: var(--gold-light); }
+.nl-sub {
+  font-size: 14px; font-weight: 300;
+  color: rgba(249,244,238,0.5); margin-bottom: 48px;
+  line-height: 1.7;
+}
+
+.nl-form {
+  display: flex; gap: 0; max-width: 480px; margin: 0 auto 24px;
+}
+.nl-input {
+  flex: 1;
+  background: rgba(249,244,238,0.07);
+  border: 1px solid rgba(249,244,238,0.15);
+  border-right: none;
+  color: var(--cream);
+  font-family: var(--font-body);
+  font-size: 13px; font-weight: 300;
+  padding: 16px 20px;
+  outline: none;
+  transition: border-color 0.3s, background 0.3s;
+}
+.nl-input::placeholder { color: rgba(249,244,238,0.3); }
+.nl-input:focus { border-color: rgba(184,144,74,0.5); background: rgba(249,244,238,0.1); }
+
+.nl-btn {
+  background: var(--gold);
+  color: var(--charcoal);
+  border: 1px solid var(--gold);
+  padding: 16px 32px;
+  font-family: var(--font-body);
+  font-size: 11px; letter-spacing: 2.5px;
+  text-transform: uppercase; font-weight: 500;
+  cursor: none;
+  transition: all 0.3s;
+  white-space: nowrap;
+}
+.nl-btn:hover { background: var(--gold-light); }
+
+.nl-perks {
+  display: flex; justify-content: center; gap: 40px;
+  font-size: 11px; letter-spacing: 1.5px;
+  text-transform: uppercase; color: rgba(249,244,238,0.35);
+  font-weight: 300;
+}
+.nl-perk::before { content: '✦  '; color: var(--gold); }
+
+/* ─────────────────────────────────────────
+   FOOTER
+───────────────────────────────────────── */
+footer {
+  background: #111110;
+  padding: 72px 72px 40px;
+}
+
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 60px;
+  margin-bottom: 60px;
+}
+
+.footer-brand-name {
+  font-family: var(--font-display);
+  font-size: 28px; font-weight: 400; font-style: italic;
+  color: var(--cream);
+  letter-spacing: 4px; text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.footer-brand-name span { color: var(--gold); }
+
+.footer-tagline {
+  font-size: 13px; font-weight: 300;
+  color: rgba(249,244,238,0.4);
+  line-height: 1.7; margin-bottom: 32px;
+  max-width: 240px;
+}
+
+.social-links { display: flex; gap: 16px; }
+.social-link {
+  width: 36px; height: 36px;
+  border: 1px solid rgba(249,244,238,0.12);
+  display: flex; align-items: center; justify-content: center;
+  color: rgba(249,244,238,0.4);
+  font-size: 14px; text-decoration: none;
+  transition: all 0.3s;
+}
+.social-link:hover { border-color: var(--gold); color: var(--gold); }
+
+.footer-col-title {
+  font-size: 10px; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--gold);
+  font-weight: 400; margin-bottom: 24px;
+}
+
+.footer-links { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.footer-links a {
+  font-size: 13px; font-weight: 300;
+  color: rgba(249,244,238,0.45); text-decoration: none;
+  transition: color 0.2s;
+  letter-spacing: 0.5px;
+}
+.footer-links a:hover { color: var(--cream); }
+
+.footer-bottom {
+  border-top: 1px solid rgba(249,244,238,0.07);
+  padding-top: 28px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.footer-copy {
+  font-size: 12px; font-weight: 300;
+  color: rgba(249,244,238,0.25); letter-spacing: 0.5px;
+}
+
+.footer-legal { display: flex; gap: 32px; }
+.footer-legal a {
+  font-size: 11px; color: rgba(249,244,238,0.25);
+  text-decoration: none; letter-spacing: 1px;
+  text-transform: uppercase; font-weight: 300;
+  transition: color 0.2s;
+}
+.footer-legal a:hover { color: rgba(249,244,238,0.6); }
+
+/* ─────────────────────────────────────────
+   ANIMATIONS
+───────────────────────────────────────── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(var(--ty, 20px)); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.reveal {
+  opacity: 0; transform: translateY(32px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+.reveal-delay-1 { transition-delay: 0.15s; }
+.reveal-delay-2 { transition-delay: 0.3s; }
+.reveal-delay-3 { transition-delay: 0.45s; }
+
+/* ─────────────────────────────────────────
+   SCROLLBAR
+───────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--charcoal); }
+::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<!-- Cursor -->
+<div id="cursor-outer"></div>
+<div id="cursor-inner"></div>
+
+<!-- ═══════════════════════════════════════
+     NAVIGATION
+═══════════════════════════════════════ -->
+<nav id="main-nav">
+  
+<header><img src="/assets/imgs/logo.jpg" alt="logo" style="height: 50px;width:auto;"></header>
+  <ul class="nav-links">
+    <li><a href="#">Collections</a></li>
+    <li><a href="#">Skincare</a></li>
+    <li><a href="#">Makeup</a></li>
+    <li><a href="#">Rituals</a></li>
+    <li><a href="#">About</a></li> 
+     <li><a href="#contacU">Contact Us</a></li>
+  </ul>
+
+  <div class="nav-actions">
+    <button class="nav-icon-btn" aria-label="Search">⌕</button>
+    <button class="nav-icon-btn" aria-label="Wishlist">♡</button>
+    <button class="nav-cart-btn"><span>Cart (0)</span></button>
+  </div>
+</nav>
+
+
+<!-- ═══════════════════════════════════════
+     HERO
+═══════════════════════════════════════ -->
+<section class="hero">
+  <!-- Left panel -->
+  <div class="hero-left">
+    <div class="hero-eyebrow">New Collection — Spring 2026</div>
+    <h1 class="hero-title">
+      Where Skin
+      <em>Meets Art</em>
+    </h1>
+    <p class="hero-sub">
+      Formulated with rare botanicals and cutting-edge science. Each product is a ritual — a moment of pure indulgence crafted for you.
+    </p>
+    <div class="hero-cta-row">
+      <a href="#" class="btn-primary">Discover Now</a>
+      <a href="#" class="btn-ghost">
+        Watch Film <span class="arrow">→</span>
+      </a>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat-item">
+        <span class="stat-num">98%</span>
+        <span class="stat-label">Natural Origin</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num">47k+</span>
+        <span class="stat-label">Happy Clients</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right panel -->
+  <div class="hero-right">
+    
+    <img src="/ss/PPP.jpeg" alt="Hero Product" class="hero-product-img"> 
+    
+          
+  
+  
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     TICKER
+═══════════════════════════════════════ -->
+<div class="ticker">
+  <div class="ticker-track">
+    <!-- First copy -->
+    <div class="ticker-item">Free Shipping Over $65 <span class="ticker-sep">✦</span></div>
+    <div class="ticker-item">Clean Beauty — 98% Natural Origin <span class="ticker-sep">✦</span></div>
+    <div class="ticker-item">Cruelty Free & Vegan <span class="ticker-sep">✦</span></div>
+    <div class="ticker-item">Spring Collection Now Live <span class="ticker-sep">✦</span></div>
+    <div class="ticker-item">Refillable Packaging <span class="ticker-sep">✦</span></div>
+    <div class="ticker-item">Dermatologist Tested <span class="ticker-sep">✦</span></div>
+    <div class="ticker-item">Earn Rewards With Every Order <span class="ticker-sep">✦</span></div>
+    <!-- Duplicate for seamless loop -->
+    <div class="ticker-item">Free Shipping Over $65 <span class="ticker-sep">✦</span></div>
+    <div class="ticker-item">Clean Beauty — 98% Natural Origin <span class="ticker-sep">✦</span></div>
+    <div class="ticker-item">Cruelty Free & Vegan <span class="ticker-sep">✦</span></div>
+    <div class="ticker-item">Spring Collection Now Live <span class="ticker-sep">✦</span></div>
+    <div class="ticker-item">Refillable Packaging <span class="ticker-sep">✦</span></div>
+    <div class="ticker-item">Dermatologist Tested <span class="ticker-sep">✦</span></div>
+    <div class="ticker-item">Earn Rewards With Every Order <span class="ticker-sep">✦</span></div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════
+     FEATURED COLLECTION
+═══════════════════════════════════════ -->
+<section class="section-featured">
+  <div class="section-header reveal">
+    <div>
+      <div class="section-eyebrow">New Arrivals</div>
+      <h2 class="section-title">The Spring <em>Edit</em></h2>
+    </div>
+    <a href="#" class="view-all-link">View All <span class="arrow">→</span></a>
+  </div>
+
+  <div class="products-grid">
+    <!-- Card 1 — large -->
+    <div class="product-card reveal">
+      <div class="product-image">
+        <div class="product-img-bg"></div> <img src="/TTT.jpeg" alt="Revive Eye Serum" style="width:100%; height:100%; object-fit: contain; position:relative; z-index:1;">
+        <div class="product-visual">
+          <div class="product-tube"></div>
+        </div>
+        <div class="product-overlay">
+          <button class="product-add-btn">Add to Bag</button>
+        </div>
+      </div>
+      <div class="product-info">
+        <div class="product-name">Revive Eye Serum</div>
+        <div class="product-variant">30ml · Premium Care</div>
+        <div class="product-price-row">
+          <span class="product-price">3700 DA</span>
+          <button class="product-wishlist">♡</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     MANIFESTO SPLIT
+═══════════════════════════════════════ -->
+<section class="section-manifesto">
+  <div class="manifesto-left">
+    <p class="manifesto-quote">
+      Beauty is not a standard — it is a language you speak to yourself.
+    </p>
+    <div class="manifesto-attr">— The Glorious Philosophy</div>
+    <a href="#" class="btn-light">Discover Our Story</a>
+  </div>
+
+  <div class="manifesto-right">
+    <div class="value-item reveal">
+      <div class="value-num">01</div>
+      <div class="value-content">
+        <div class="value-title">Clean Formulas</div>
+        <div class="value-desc">Every ingredient is selected with intention. No parabens, no sulfates — only what your skin truly needs.</div>
+      </div>
+    </div>
+    <div class="value-item reveal reveal-delay-1">
+      <div class="value-num">02</div>
+      <div class="value-content">
+        <div class="value-title">Sustainable Soul</div>
+        <div class="value-desc">Refillable packaging, carbon-neutral shipping, and B Corp certified since 2021.</div>
+      </div>
+    </div>
+    <div class="value-item reveal reveal-delay-2">
+      <div class="value-num">03</div>
+      <div class="value-content">
+        <div class="value-title">Science Meets Nature</div>
+        <div class="value-desc">Three years of R&D per formula. Clinically tested efficacy backed by rare botanical intelligence.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     BESTSELLERS CAROUSEL
+═══════════════════════════════════════ -->
+<section class="section-bestsellers">
+  <div class="bestsellers-header">
+    <div class="reveal">
+      <div class="section-eyebrow">Most Loved</div>
+      <h2 class="section-title">Fan <em>Favourites</em></h2>
+    </div>
+    <div class="carousel-nav">
+      <button class="carousel-btn" id="prev-btn">←</button>
+      <button class="carousel-btn" id="next-btn">→</button>
+    </div>
+  </div>
+
+  <div class="carousel-track" id="carousel">
+    <!-- Product 1 -->
+    <div class="carousel-card c1">
+      <div class="carousel-img">
+        <img src="/OOO.jpeg" alt="Revive Eye Serum" style="width:100%; height:100%; object-fit: contain; position:relative; z-index:1;">
+        <div class="carousel-img-bg"></div>
+        <div class="carousel-product-art">
+          <div class="mini-bottle"></div>
+        </div>
+        <div class="bestseller-badge">Best Seller</div>
+      </div>
+      <div class="shade-dots">
+        <div class="shade-dot active" style="background:#C8987C;"></div>
+      </div>
+      <div class="carousel-card-name">Revive Eye Serum</div>
+      <div class="carousel-card-type">30ml · Premium</div>
+      <div class="carousel-card-footer">
+        <span class="carousel-card-price">3700 DA</span>
+        <div class="carousel-rating"><span class="stars">★★★★★</span> 5.0 (1.2k)</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     RITUAL / HOW TO USE
+═══════════════════════════════════════ -->
+<section class="section-ritual">
+  <div class="reveal">
+    <div class="section-eyebrow" style="color:var(--gold);">The Method</div>
+    <h2 class="section-title" style="color:var(--cream);">Your Daily <em>Ritual</em></h2>
+  </div>
+
+  <div class="ritual-steps">
+    <div class="ritual-step reveal">
+      <div class="ritual-step-num">01</div>
+      <div class="ritual-icon">✦</div>
+      <div class="ritual-step-title">Cleanse</div>
+      <div class="ritual-step-desc">Begin with our gentle micellar cleanser. Remove impurities without disrupting your skin's natural balance.</div>
+    </div>
+    <div class="ritual-step reveal reveal-delay-1">
+      <div class="ritual-step-num">02</div>
+      <div class="ritual-icon">◎</div>
+      <div class="ritual-step-title">Treat</div>
+      <div class="ritual-step-desc">Apply your targeted serum while skin is still slightly damp. Press — don't rub — to seal in actives.</div>
+    </div>
+    <div class="ritual-step reveal reveal-delay-2">
+      <div class="ritual-step-num">03</div>
+      <div class="ritual-icon">❋</div>
+      <div class="ritual-step-title">Nourish</div>
+      <div class="ritual-step-desc">Finish with Velvet Moisture Cream. Massage in upward strokes. Breathe. This moment is yours.</div>
+    </div>
+    <div class="ritual-step reveal reveal-delay-3">
+      <div class="ritual-step-num">04</div>
+      <div class="ritual-icon">✿</div>
+      <div class="ritual-step-title">Glow</div>
+      <div class="ritual-step-desc">Finish with SPF and your choice of makeup. Luminous, protected, and entirely yourself.</div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     TESTIMONIALS
+═══════════════════════════════════════ -->
+<section class="section-testimonials">
+  <div class="reveal">
+    <div class="section-eyebrow">Reviews</div>
+    <h2 class="section-title">Loved by <em>Thousands</em></h2>
+  </div>
+
+  <div class="testimonials-grid">
+    <!-- Featured -->
+    <div class="testimonial-card featured reveal">
+      <div class="testimonial-stars">★★★★★</div>
+      <p class="testimonial-text">"I've tried every luxury skincare brand on the market. Nothing has transformed my skin the way Lumière's serum has. Three weeks in, I've had strangers stop me to ask what I'm using."</p>
+      <div class="testimonial-author">
+        <div class="author-avatar a1">S</div>
+        <div>
+          <div class="author-name">Sofia Laurent</div>
+          <div class="author-tag">Verified Purchase · Paris, FR</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial-card reveal reveal-delay-1">
+      <div class="testimonial-stars">★★★★★</div>
+      <p class="testimonial-text">"The packaging alone felt like unboxing a gift I gave myself. The cream? Absolute heaven."</p>
+      <div class="testimonial-author">
+        <div class="author-avatar a2">M</div>
+        <div>
+          <div class="author-name">Maya Chen</div>
+          <div class="author-tag">Verified · Singapore</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testimonial-card reveal reveal-delay-2">
+      <div class="testimonial-stars">★★★★★</div>
+      <p class="testimonial-text">"My dull winter skin is completely gone. I look like I've had 12 hours of sleep every single day."</p>
+      <div class="testimonial-author">
+        <div class="author-avatar a3">A</div>
+        <div>
+          <div class="author-name">Amara Johnson</div>
+          <div class="author-tag">Verified · London, UK</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     UGC INSTAGRAM GRID
+═══════════════════════════════════════ -->
+<section class="section-ugc">
+  <div class="ugc-header reveal">
+    <div class="section-eyebrow" style="text-align:center; margin-bottom:8px;">Community</div>
+    <div class="ugc-handle">@glorious_cosm</div>
+    <p style="font-size:13px; color:var(--muted); margin-top:8px;">Tag us for a chance to be featured</p>
+  </div>
+
+  <div class="ugc-grid">
+    <div class="ugc-item reveal">
+      <div class="ugc-bg"></div>
+      <div class="ugc-overlay"><span class="ugc-icon">♡</span></div>
+    </div>
+    <div class="ugc-item reveal reveal-delay-1">
+      <div class="ugc-bg"></div>
+      <div class="ugc-overlay"><span class="ugc-icon">♡</span></div>
+    </div>
+    <div class="ugc-item reveal reveal-delay-2">
+      <div class="ugc-bg"></div>
+      <div class="ugc-overlay"><span class="ugc-icon">♡</span></div>
+    </div>
+    <div class="ugc-item reveal reveal-delay-3">
+      <div class="ugc-bg"></div>
+      <div class="ugc-overlay"><span class="ugc-icon">♡</span></div>
+    </div>
+    <div class="ugc-item reveal reveal-delay-1">
+      <div class="ugc-bg"></div>
+      <div class="ugc-overlay"><span class="ugc-icon">♡</span></div>
+    </div>
+    <div class="ugc-item reveal reveal-delay-2">
+      <div class="ugc-bg"></div>
+      <div class="ugc-overlay"><span class="ugc-icon">♡</span></div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     CONTACT US
+═══════════════════════════════════════ -->
+<section id="contacU" class="section-contact" style="padding: 100px 72px; background: var(--cream2); text-align: center;">
+  <div class="reveal">
+    <div class="section-eyebrow" style="color: var(--gold);">Get In Touch</div>
+    <h2 class="section-title" style="margin-bottom: 40px;">Contact <em>Us</em></h2>
+  </div>
+  <div style="display: flex; justify-content: center; gap: 30px; align-items: center;">
+    <a href="https://www.instagram.com/glorious_cosm/" target="_blank" style="display: inline-flex; align-items: center; justify-content: center; width: 80px; height: 80px; border-radius: 50%; background: var(--black); color: var(--white); text-decoration: none; font-size: 40px; transition: all 0.3s; box-shadow: 0 8px 24px rgba(184,144,74,0.3);" onmouseover="this.style.background='var(--gold-light)'; this.style.transform='scale(1.1)';" onmouseout="this.style.background='var(--gold)'; this.style.transform='scale(1)';">
+      <img src="/ss/Instagram icon white 3.png" alt="Instagram" style="width: 24px; height: 24px;">
+    </a>
+    <div>
+      <p style="font-size: 18px; color: var(--charcoal); margin-bottom: 8px; font-weight: 500;">Follow Us on Instagram</p>
+      <p style="font-size: 14px; color: var(--muted);">@glorious_cosm</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════
+     NEWSLETTER
+═══════════════════════════════════════ -->
+<section class="section-newsletter">
+  <div class="newsletter-inner">
+    <div class="nl-eyebrow">Join the Inner Circle</div>
+    <h2 class="nl-title">Beauty secrets &<br><em>early access</em></h2>
+    <p class="nl-sub">Subscribe for exclusive offers, skincare rituals from our experts, and first access to new collections.</p>
+
+    <div class="nl-form">
+      <input type="email" class="nl-input" placeholder="your@email.com">
+      <button class="nl-btn">Subscribe</button>
+    </div>
+
+    <div class="nl-perks">
+      <span class="nl-perk">15% off welcome</span>
+      <span class="nl-perk">Early access</span>
+      <span class="nl-perk">Expert tips</span>
+    </div>
+  </div>
+</section>
+
+
+<!-- ═══════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════ -->
+<footer>
+  <div class="footer-grid">
+    <div>
+      <div class="footer-brand-name"i<e>glorious_cosm</e></div>
+      <p class="footer-tagline">Luxury cosmetics crafted with rare botanicals and cutting-edge science. Beauty, elevated.</p>
+      <div class="social-links">
+        <a href="https://www.instagram.com/glorious_cosm/" target="_blank" class="social-link">in</a>
+        <a href="https://twitter.com/glorious_cosm" target="_blank" class="social-link">tw</a>
+        <a href="https://www.facebook.com/glorious_cosm" target="_blank" class="social-link">fb</a>
+        <a href="https://www.youtube.com/glorious_cosm" target="_blank" class="social-link">yt</a>
+      </div>
+    </div>
+
+    <div>
+      <div class="footer-col-title">Shop</div>
+      <ul class="footer-links">
+        <li><a href="#">New Arrivals</a></li>
+        <li><a href="#">Skincare</a></li>
+        <li><a href="#">Makeup</a></li>
+        <li><a href="#">Fragrance</a></li>
+        <li><a href="#">Gift Sets</a></li>
+        <li><a href="#">Sale</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <div class="footer-col-title">Help</div>
+      <ul class="footer-links">
+        <li><a href="#">Skin Quiz</a></li>
+        <li><a href="#">Track Order</a></li>
+        <li><a href="#">Returns & Refunds</a></li>
+        <li><a href="#">Shipping Info</a></li>
+        <li><a href="#">FAQ</a></li>
+        <li><a href="#">Contact Us</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <div class="footer-col-title">Company</div>
+      <ul class="footer-links">
+        <li><a href="#">Our Story</a></li>
+        <li><a href="#">Sustainability</a></li>
+        <li><a href="#">Ingredients</a></li>
+        <li><a href="#">Press</a></li>
+        <li><a href="#">Stockists</a></li>
+        <li><a href="#">Careers</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <h4>Made with care by <a href="https://www.instagram.com/luuux_bau/" target="_blank" style="color: var(--gold); text-decoraAtion: none;">Smd Onetop</a></h4>
+    <div class="footer-copy">© 2026 Glorious Cosmetics. All rights reserved.</div>
+    <div class="footer-legal">
+      <a href="#">Privacy Policy</a>
+      <a href="#">Terms of Use</a>
+      <a href="#">Cookie Settings</a>
+    </div>
+  </div>
+</footer>
+
+
+<!-- ═══════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════ -->
+<script>
+/* ── Custom Cursor ── */
+const outer = document.getElementById('cursor-outer');
+const inner = document.getElementById('cursor-inner');
+let mx = -100, my = -100, ox = -100, oy = -100;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  inner.style.left = mx + 'px';
+  inner.style.top = my + 'px';
+});
+
+function animateCursor() {
+  ox += (mx - ox) * 0.12;
+  oy += (my - oy) * 0.12;
+  outer.style.left = ox + 'px';
+  outer.style.top = oy + 'px';
+  requestAnimationFrame(animateCursor);
+}
+animateCursor();
+
+/* ── Nav scroll ── */
+const nav = document.getElementById('main-nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 60);
+});
+
+/* ── Scroll reveal ── */
+const revealEls = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+revealEls.forEach(el => io.observe(el));
+
+/* ── Carousel ── */
+const carousel = document.getElementById('carousel');
+document.getElementById('prev-btn').addEventListener('click', () => {
+  carousel.scrollBy({ left: -304, behavior: 'smooth' });
+});
+document.getElementById('next-btn').addEventListener('click', () => {
+  carousel.scrollBy({ left: 304, behavior: 'smooth' });
+});
+
+/* Drag to scroll */
+let isDown = false, startX, scrollLeft;
+carousel.addEventListener('mousedown', e => {
+  isDown = true; startX = e.pageX - carousel.offsetLeft;
+  scrollLeft = carousel.scrollLeft;
+});
+carousel.addEventListener('mouseleave', () => isDown = false);
+carousel.addEventListener('mouseup', () => isDown = false);
+carousel.addEventListener('mousemove', e => {
+  if (!isDown) return;
+  e.preventDefault();
+  const x = e.pageX - carousel.offsetLeft;
+  carousel.scrollLeft = scrollLeft - (x - startX) * 1.2;
+});
+
+/* ── Shade dot selection ── */
+document.querySelectorAll('.shade-dot').forEach(dot => {
+  dot.addEventListener('click', function() {
+    this.closest('.shade-dots').querySelectorAll('.shade-dot').forEach(d => d.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
+/* ── Wishlist toggle ── */
+document.querySelectorAll('.product-wishlist').forEach(btn => {
+  btn.addEventListener('click', function() {
+    const active = this.textContent === '♥';
+    this.textContent = active ? '♡' : '♥';
+    this.style.color = active ? '' : 'var(--rose)';
+  });
+});
+
+/* ── Newsletter form ── */
+document.querySelector('.nl-btn').addEventListener('click', function() {
+  const input = document.querySelector('.nl-input');
+  if (input.value && input.value.includes('@')) {
+    this.textContent = 'Welcome! ✓';
+    this.style.background = '#5a8a5a';
+    input.value = '';
+    setTimeout(() => { this.textContent = 'Subscribe'; this.style.background = ''; }, 3000);
+  } else {
+    input.style.borderColor = 'rgba(196,116,122,0.7)';
+    setTimeout(() => { input.style.borderColor = ''; }, 1500);
+  }
+});
+
+/* ── Add to bag micro-interaction ── */
+document.querySelectorAll('.product-add-btn, .btn-primary').forEach(btn => {
+  btn.addEventListener('click', function(e) {
+    const rect = this.getBoundingClientRect();
+    const ripple = document.createElement('span');
+    ripple.style.cssText = `
+      position:absolute; border-radius:50%;
+      background:rgba(255,255,255,0.35);
+      width:60px; height:60px;
+      top:${e.clientY - rect.top - 30}px;
+      left:${e.clientX - rect.left - 30}px;
+      animation:rippleOut 0.5s ease forwards;
+      pointer-events:none;
+    `;
+    this.style.position = 'relative';
+    this.style.overflow = 'hidden';
+    this.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 500);
+  });
+});
+
+const style = document.createElement('style');
+style.textContent = `@keyframes rippleOut { from { transform:scale(0); opacity:1; } to { transform:scale(4); opacity:0; } }`;
+document.head.appendChild(style);
+</script>
+</body>
+</html>
