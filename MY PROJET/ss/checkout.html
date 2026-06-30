@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ar-DZ" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Glorious Cosmetics checkout page — كاملة بطريقة احترافية لطلب المنتج." />
+  <title>Glorious Cosmetics — الدفع</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="cursor-outer" aria-hidden="true"></div>
+  <div id="cursor-inner" aria-hidden="true"></div>
+
+  <nav id="main-nav" role="navigation" aria-label="Main navigation">
+    <a href="index.html" class="nav-logo" aria-label="العودة إلى المتجر">
+      <img src="../assets/imgs/logo.jpg" alt="Glorious Cosmetics Logo" class="nav-logo-img">
+    </a>
+    <div class="nav-actions">
+      <a href="index.html" class="btn-light">العودة للمتجر</a>
+    </div>
+  </nav>
+
+  <main class="section-checkout" aria-labelledby="checkout-title">
+    <div class="checkout-intro">
+      <div>
+        <div class="section-eyebrow">Checkout</div>
+        <h1 id="checkout-title" class="section-title">أكمل طلبك بأمان</h1>
+        <p class="checkout-tag">املأ بياناتك هنا لإكمال الطلب بسرعة. الطلب يتم تأكيده عبر الهاتف أو رسالة قصيرة.</p>
+      </div>
+      <div class="secure-badge">آمن 100% • الدفع عند الاستلام</div>
+    </div>
+
+    <div class="checkout-grid">
+      <section class="checkout-summary-panel reveal">
+        <div class="summary-header">
+          <h2 class="summary-title">ملخص الطلب</h2>
+          <p class="summary-subtitle">تأكد من تفاصيل المنتج قبل الإرسال.</p>
+        </div>
+
+        <div class="checkout-summary-row">
+          <span>المنتج</span>
+          <strong id="checkout-product">لم يتم اختيار أي منتج بعد.</strong>
+        </div>
+        <div class="checkout-summary-row">
+          <span>السعر</span>
+          <strong id="checkout-price">0 DA</strong>
+        </div>
+        <div class="checkout-summary-row">
+          <span>الكمية</span>
+          <strong>1</strong>
+        </div>
+        <div class="checkout-summary-row">
+          <span>التوصيل المتوقع</span>
+          <strong>2-4 أيام عمل</strong>
+        </div>
+
+        <div class="checkout-highlights">
+          <div class="highlight-item">✓ تأكيد سريع من خلال الرسائل</div>
+          <div class="highlight-item">✓ لا توجد رسوم خفية</div>
+          <div class="highlight-item">✓ دعم عبر الواتساب بعد الطلب</div>
+        </div>
+      </section>
+
+      <section class="checkout-form-panel reveal">
+        <div class="section-header">
+          <div>
+            <div class="section-eyebrow">بيانات العميل</div>
+            <h2 class="section-title">تفاصيل الشحن والدفع</h2>
+          </div>
+        </div>
+
+        <form id="checkout-form" class="checkout-form" novalidate>
+          <div class="form-row">
+            <label for="customer-name">الاسم الكامل</label>
+            <input id="customer-name" class="checkout-input" type="text" name="name" placeholder="اكتب اسمك الكامل" autocomplete="name" required>
+          </div>
+
+          <div class="form-row">
+            <label for="customer-phone">رقم الهاتف</label>
+            <input id="customer-phone" class="checkout-input" type="tel" name="phone" placeholder="05XXXXXXXX" autocomplete="tel" pattern="^[0-9+\s-]{8,20}$" required>
+          </div>
+
+          <div class="form-row">
+            <label for="customer-email">البريد الإلكتروني</label>
+            <input id="customer-email" class="checkout-input" type="email" name="email" placeholder="example@mail.com" autocomplete="email" required>
+          </div>
+
+          <div class="form-row">
+            <label for="customer-city">المدينة</label>
+            <input id="customer-city" class="checkout-input" type="text" name="city" placeholder="الجزائر، وهران، ..." autocomplete="address-level2" required>
+          </div>
+
+          <div class="form-row">
+            <label for="customer-address">العنوان الكامل</label>
+            <input id="customer-address" class="checkout-input" type="text" name="address" placeholder="عنوان التسليم بالتفصيل" autocomplete="street-address" required>
+          </div>
+
+          <div class="form-row">
+            <label for="customer-note">ملاحظة الطلب (اختياري)</label>
+            <textarea id="customer-note" class="checkout-input checkout-textarea" name="note" rows="4" placeholder="مثال: أرجو ترك الطرد عند الباب إن لم أكن موجودًا."></textarea>
+          </div>
+
+          <fieldset class="payment-methods" aria-label="طريقة الدفع">
+            <legend>طريقة الدفع</legend>
+            <label class="payment-option"><input type="radio" name="payment" value="cod" checked> الدفع عند الاستلام</label>
+            <label class="payment-option"><input type="radio" name="payment" value="card"> الدفع ببطاقة</label>
+          </fieldset>
+
+          <div class="checkout-actions">
+            <button type="submit" class="btn-primary">إرسال الطلب</button>
+            <div id="checkout-message" class="checkout-message" aria-live="polite"></div>
+          </div>
+        </form>
+
+        <div class="checkout-footer-note">
+          <p>سيتم التواصل معك لتأكيد الطلب خلال دقائق. سيتم حماية بياناتك وعدم مشاركتها مع أي طرف ثالث.</p>
+        </div>
+      </section>
+    </div>
+
+    <section class="order-confirmation hidden reveal" aria-live="polite">
+      <div class="confirmation-card">
+        <div class="confirmation-header">
+          <span class="confirmation-badge">تم تأكيد الطلب</span>
+          <h2 class="confirmation-title">شكراً! طلبك جاهز الآن</h2>
+          <p class="confirmation-subtitle">يمكنك تحميل فاتورة الطلب أو العودة إلى المتجر لمواصلة التسوق.</p>
+        </div>
+
+        <div class="confirmation-details">
+          <div class="detail-row"><span>رقم الطلب</span><strong id="order-number">#000000</strong></div>
+          <div class="detail-row"><span>المنتج</span><strong id="confirm-product"></strong></div>
+          <div class="detail-row"><span>السعر</span><strong id="confirm-price"></strong></div>
+          <div class="detail-row"><span>الاسم</span><strong id="confirm-name"></strong></div>
+          <div class="detail-row"><span>الهاتف</span><strong id="confirm-phone"></strong></div>
+          <div class="detail-row"><span>المدينة</span><strong id="confirm-city"></strong></div>
+          <div class="detail-row"><span>العنوان</span><strong id="confirm-address"></strong></div>
+          <div class="detail-row"><span>طريقة الدفع</span><strong id="confirm-payment"></strong></div>
+        </div>
+
+        <div class="confirmation-actions">
+          <button id="download-invoice" type="button" class="btn-secondary">تحميل فاتورة الطلب</button>
+          <a href="index.html" class="btn-primary">العودة إلى المتجر</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    'use strict';
+
+    function getQueryParam(name) {
+      return new URLSearchParams(window.location.search).get(name) || '';
+    }
+
+    function sanitizeText(value) {
+      const element = document.createElement('div');
+      element.textContent = value;
+      return element.innerText;
+    }
+
+    const productField = document.getElementById('checkout-product');
+    const priceField = document.getElementById('checkout-price');
+    const messageField = document.getElementById('checkout-message');
+    const form = document.getElementById('checkout-form');
+    const nameInput = document.getElementById('customer-name');
+    const phoneInput = document.getElementById('customer-phone');
+    const noteField = document.getElementById('checkout-note');
+    const productName = sanitizeText(getQueryParam('product')) || 'منتج غير معروف';
+    const productPrice = sanitizeText(getQueryParam('price')) || '0 DA';
+    const emailInput = document.getElementById('customer-email');
+    const cityInput = document.getElementById('customer-city');
+    const addressInput = document.getElementById('customer-address');
+    const paymentInputs = document.getElementsByName('payment');
+    const footerNote = document.getElementById('checkout-note');
+
+    const confirmationSection = document.querySelector('.order-confirmation');
+    const orderNumberField = document.getElementById('order-number');
+    const confirmProduct = document.getElementById('confirm-product');
+    const confirmPrice = document.getElementById('confirm-price');
+    const confirmName = document.getElementById('confirm-name');
+    const confirmPhone = document.getElementById('confirm-phone');
+    const confirmCity = document.getElementById('confirm-city');
+    const confirmAddress = document.getElementById('confirm-address');
+    const confirmPayment = document.getElementById('confirm-payment');
+    const downloadButton = document.getElementById('download-invoice');
+
+    productField.textContent = productName;
+    priceField.textContent = productPrice;
+
+    if (productName === 'منتج غير معروف') {
+      footerNote.textContent = 'لا يمكن إكمال الطلب بدون اختيار منتج. عد إلى الصفحة الرئيسية واختر منتجاً.';
+      footerNote.style.color = '#f38b8b';
+    }
+
+    function validateName(value) {
+      return value.trim().length >= 3;
+    }
+
+    function validatePhone(value) {
+      return /^[0-9+\s-]{8,20}$/.test(value.trim());
+    }
+
+    function validateEmail(value) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+    }
+
+    function showMessage(text, success) {
+      messageField.textContent = text;
+      messageField.className = 'checkout-message' + (success ? ' success' : '');
+    }
+
+    function getSelectedPayment() {
+      for (const input of paymentInputs) {
+        if (input.checked) return input.value;
+      }
+      return 'cod';
+    }
+
+    function createOrderNumber() {
+      const now = Date.now().toString();
+      return 'GL' + now.slice(-6);
+    }
+
+    function downloadInvoice(orderData) {
+      const lines = [
+        'فاتورة طلب Glorious Cosmetics',
+        '-----------------------------',
+        `رقم الطلب: ${orderData.orderNumber}`,
+        `المنتج: ${orderData.product}`,
+        `السعر: ${orderData.price}`,
+        `الاسم: ${orderData.name}`,
+        `الهاتف: ${orderData.phone}`,
+        `البريد الإلكتروني: ${orderData.email}`,
+        `المدينة: ${orderData.city}`,
+        `العنوان: ${orderData.address}`,
+        `طريقة الدفع: ${orderData.payment}`,
+        `الملاحظة: ${orderData.note || 'لا يوجد'}`,
+        '-----------------------------',
+        'شكراً لاختيارك Glorious Cosmetics.',
+      ];
+
+      const blob = new Blob([lines.join('\n')], { type: 'text/plain;charset=utf-8' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = `glorious-order-${orderData.orderNumber}.txt`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(link.href);
+    }
+
+    let currentOrder = null;
+
+    form.addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const name = nameInput.value.trim();
+      const phone = phoneInput.value.trim();
+      const email = emailInput.value.trim();
+      const city = cityInput.value.trim();
+      const address = addressInput.value.trim();
+      const note = document.getElementById('customer-note').value.trim();
+      const paymentMethod = getSelectedPayment();
+
+      if (!validateName(name)) {
+        showMessage('الرجاء إدخال اسم صحيح لا يقل عن 3 أحرف.', false);
+        nameInput.focus();
+        return;
+      }
+
+      if (!validatePhone(phone)) {
+        showMessage('الرجاء إدخال رقم هاتف صالح.', false);
+        phoneInput.focus();
+        return;
+      }
+
+      if (!validateEmail(email)) {
+        showMessage('الرجاء إدخال بريد إلكتروني صالح.', false);
+        emailInput.focus();
+        return;
+      }
+
+      if (!city) {
+        showMessage('الرجاء إدخال المدينة.', false);
+        cityInput.focus();
+        return;
+      }
+
+      if (!address) {
+        showMessage('الرجاء إدخال العنوان الكامل.', false);
+        addressInput.focus();
+        return;
+      }
+
+      const methodLabel = paymentMethod === 'cod' ? 'الدفع عند الاستلام' : 'الدفع ببطاقة';
+      const orderNumber = createOrderNumber();
+
+      currentOrder = {
+        orderNumber,
+        product: productName,
+        price: productPrice,
+        name,
+        phone,
+        email,
+        city,
+        address,
+        note,
+        payment: methodLabel,
+      };
+
+      orderNumberField.textContent = orderNumber;
+      confirmProduct.textContent = productName;
+      confirmPrice.textContent = productPrice;
+      confirmName.textContent = name;
+      confirmPhone.textContent = phone;
+      confirmCity.textContent = city;
+      confirmAddress.textContent = address;
+      confirmPayment.textContent = methodLabel;
+
+      confirmationSection.classList.remove('hidden');
+      confirmationSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      form.classList.add('hidden');
+      footerNote.classList.add('hidden');
+      showMessage('تم تأكيد الطلب. يمكنك تحميل فاتورة الطلب الآن.', true);
+    });
+
+    downloadButton.addEventListener('click', function() {
+      if (!currentOrder) return;
+      downloadInvoice(currentOrder);
+    });
+  </script>
+</body>
+</html>
